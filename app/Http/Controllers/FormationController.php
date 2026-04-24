@@ -42,6 +42,33 @@ class FormationController extends Controller
             ->with('success', 'Formation ajoutée avec succès.');
     }
 
+    public function edit(Formation $formation)
+    {
+        return view('formations.edit', [
+            'formation' => $formation,
+            'niveaux' => self::NIVEAUX,
+        ]);
+    }
+
+    public function update(Request $request, Formation $formation)
+    {
+        $validated = $request->validate([
+            'titre' => [
+                'required', 'string', 'max:255',
+                Rule::unique('formations', 'titre')->ignore($formation->id),
+            ],
+            'description' => 'required|string|min:10',
+            'duree' => 'required|string|max:50',
+            'niveau' => ['required', Rule::in(self::NIVEAUX)],
+        ]);
+
+        $formation->update($validated);
+
+        return redirect()
+            ->route('formations.index')
+            ->with('success', 'Formation modifiée avec succès.');
+    }
+
     public function destroy(Formation $formation)
     {
         $formation->delete();
