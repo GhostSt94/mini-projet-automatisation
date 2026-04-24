@@ -77,8 +77,8 @@ jobs:
 
       - name: Sanity check image
         run: |
-          docker run --rm formation-app:${{ github.sha }} php --version
-          docker run --rm formation-app:${{ github.sha }} php artisan --version
+          docker run --rm --entrypoint php formation-app:${{ github.sha }} --version
+          docker run --rm --entrypoint php formation-app:${{ github.sha }} artisan --version
 
   deploy-stack:
     name: Integration test (docker-compose)
