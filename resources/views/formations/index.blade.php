@@ -40,12 +40,27 @@
                         </span>
                     </div>
                     <p class="text-gray-600 mb-4">{{ $formation->description }}</p>
-                    <div class="text-sm text-gray-500 flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Durée : {{ $formation->duree }}
+                    <div class="flex justify-between items-center">
+                        <div class="text-sm text-gray-500 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Durée : {{ $formation->duree }}
+                        </div>
+                        <form method="POST" action="{{ route('formations.destroy', $formation) }}"
+                              onsubmit="return confirm('Supprimer la formation « {{ $formation->titre }} » ?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="text-red-600 hover:text-red-800 text-sm font-semibold flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3"/>
+                                </svg>
+                                Supprimer
+                            </button>
+                        </form>
                     </div>
                 </div>
             @endforeach

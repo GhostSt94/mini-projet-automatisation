@@ -17,3 +17,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Word temp/lock files
+~$*
+
+# Generated reports (regenerate with docs/build_docx.py)
+/docs/rapport*.docx
