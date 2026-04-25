@@ -77,12 +77,47 @@ mini-projet/
 
 ## Pipeline CI/CD
 
-Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) s'exécute
-sur chaque `push` / `pull_request` :
+Le workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) enchaîne :
 
-1. **test** — installe les dépendances Composer, migre une base SQLite et exécute `php artisan test`.
-2. **docker-build** — construit l'image Docker et vérifie qu'elle démarre.
-3. **deploy-stack** — lance la stack complète avec `docker compose up` et effectue un smoke test HTTP.
+1. **test** — installe les dépendances Composer, migre une base SQLite et exécute `php artisan test`. Tourne sur `push` et `pull_request`.
+2. **build-push** — construit l'image Docker et la pousse sur Docker Hub (`<user>/formation-app:latest`). Ne tourne **que sur `push` vers `main`**.
+3. **deploy** — copie [`docker-compose.prod.yml`](docker-compose.prod.yml) sur le VPS via SCP, puis lance `docker compose pull && up -d` via SSH. Termine par un smoke test HTTP sur le VPS. Ne tourne **que sur `push` vers `main`**.
+
+### Configuration des secrets GitHub
+
+Pour que les jobs `build-push` et `deploy` fonctionnent, configurer dans
+**Settings → Secrets and variables → Actions** :
+
+| Secret | Contenu |
+|---|---|
+| `DOCKERHUB_USERNAME` | nom d'utilisateur Docker Hub |
+| `DOCKERHUB_TOKEN` | Personal Access Token (créer sur https://hub.docker.com/settings/security) |
+| `VPS_HOST` | IP ou domaine du VPS |
+| `VPS_USER` | utilisateur SSH du VPS |
+| `VPS_PASSWORD` | mot de passe SSH du VPS |
+
+### Préparation du VPS (one-shot)
+
+```bash
+ssh user@vps-host
+
+# 1. Vérifier que SSH par password est autorisé
+sudo sed -i 's/^#*PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo systemctl restart ssh
+
+# 2. Créer le répertoire de déploiement
+mkdir -p ~/formapro
+
+# 3. Ouvrir le port 8000 (si firewall actif)
+sudo ufw allow 8000/tcp
+
+# 4. Vérifier Docker
+docker --version && docker compose version
+```
+
+Après le premier `git push` sur `main` :
+- L'image apparaît sur `https://hub.docker.com/r/<user>/formation-app/tags`
+- L'application est accessible sur `http://<vps-host>:8000/`
 
 ## Rapport
 
