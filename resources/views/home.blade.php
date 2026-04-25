@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="bg-white rounded-lg shadow p-10 text-center">
-        <h1 class="text-4xl font-bold text-indigo-700 mb-4">Bienvenue sur FormaPro</h1>
+        <h1 class="text-4xl font-bold text-indigo-700 mb-4">Bienvenue sur FormaPro - v1</h1>
         <p class="text-lg text-gray-600 mb-8">
             Notre plateforme vous propose une sélection de formations techniques
             pour développer vos compétences en développement web, DevOps et plus encore.
